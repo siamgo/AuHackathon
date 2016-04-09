@@ -55,7 +55,10 @@ public:
 	void onPose(myo::Myo* myo, uint64_t timestamp, myo::Pose pose)
 	{
 		currentPose = pose;
+		
 		if (pose != myo::Pose::unknown && pose != myo::Pose::rest) {
+			if (currentPose == myo::Pose::fist)
+				std::cout << "You made a fist" << std::endl;
 			// Tell the Myo to stay unlocked until told otherwise. We do that here so you can hold the poses without the
 			// Myo becoming locked.
 			myo->unlock(myo::Myo::unlockHold);
@@ -102,9 +105,9 @@ public:
 		// Clear the current line
 		std::cout << '\r';
 		// Print out the orientation. Orientation data is always available, even if no arm is currently recognized.
-		std::cout << '[' << std::string(roll_w, '*') << std::string(18 - roll_w, ' ') << ']'
-			<< '[' << std::string(pitch_w, '*') << std::string(18 - pitch_w, ' ') << ']'
-			<< '[' << std::string(yaw_w, '*') << std::string(18 - yaw_w, ' ') << ']';
+		//std::cout << '[' << std::string(roll_w, '*') << std::string(18 - roll_w, ' ') << ']'
+		//	<< '[' << std::string(pitch_w, '*') << std::string(18 - pitch_w, ' ') << ']'
+		//	<< '[' << std::string(yaw_w, '*') << std::string(18 - yaw_w, ' ') << ']';
 		if (onArm) {
 			// Print out the lock state, the currently recognized pose, and which arm Myo is being worn on.
 			// Pose::toString() provides the human-readable name of a pose. We can also output a Pose directly to an

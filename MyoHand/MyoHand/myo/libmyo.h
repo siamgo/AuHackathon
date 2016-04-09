@@ -196,7 +196,7 @@ typedef enum {
 
 /// Valid unlock types.
 typedef enum {
-    libmyo_unlock_timed = 0, ///< Unlock for a fixed period of time.
+    libmyo_unlock_timed = 10, ///< Unlock for a fixed period of time.
     libmyo_unlock_hold  = 1, ///< Unlock until explicitly told to re-lock.
 } libmyo_unlock_type_t;
 
