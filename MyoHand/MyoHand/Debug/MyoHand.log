@@ -1,0 +1,8 @@
+﻿  GettingStartedTest.cpp
+c:\users\peter\desktop\au hack\auhackathon\myohand\myohand\myo\cxx\detail\throwonerror.hpp(39): warning C4297: 'myo::ThrowOnError::~ThrowOnError': function assumed not to throw an exception but does
+  c:\users\peter\desktop\au hack\auhackathon\myohand\myohand\myo\cxx\detail\throwonerror.hpp(39): note: destructor or deallocator has a (possibly implicit) non-throwing exception specification
+c:\users\peter\desktop\au hack\auhackathon\myohand\myohand\myo\cxx\detail\throwonerror.hpp(45): warning C4297: 'myo::ThrowOnError::~ThrowOnError': function assumed not to throw an exception but does
+  c:\users\peter\desktop\au hack\auhackathon\myohand\myohand\myo\cxx\detail\throwonerror.hpp(45): note: destructor or deallocator has a (possibly implicit) non-throwing exception specification
+c:\users\peter\desktop\au hack\auhackathon\myohand\myohand\gettingstartedtest.cpp(163): warning C4996: 'wcsncpy': This function or variable may be unsafe. Consider using wcsncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\corecrt_wstring.h(204): note: see declaration of 'wcsncpy'
+  MyoHand.vcxproj -> C:\Users\Peter\Desktop\AU HACk\AuHackathon\MyoHand\Debug\MyoHand.exe
