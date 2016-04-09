@@ -18,12 +18,15 @@
     <ClCompile Include="GettingStartedTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="StreamingEMGData.cpp">
+    <ClCompile Include="SeialClass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="myo\myo.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SerialClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

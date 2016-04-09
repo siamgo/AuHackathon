@@ -2,13 +2,16 @@
 // Distributed under the Myo SDK license agreement. See LICENSE.txt for details.
 #define _USE_MATH_DEFINES
 #include <cmath>
+#include <cwchar>
 #include <iostream>
 #include <iomanip>
 #include <stdexcept>
 #include <string>
 #include <algorithm>
+
 // The only file that needs to be included to use the Myo C++ SDK is myo.hpp.
 #include "myo/myo.hpp"
+#include "Arduino.h"
 // Classes that inherit from myo::DeviceListener can be used to receive events from Myo devices. DeviceListener
 // provides several virtual functions for handling different kinds of events. If you do not override an event, the
 // default behavior is to do nothing.
@@ -57,8 +60,8 @@ public:
 		currentPose = pose;
 		
 		if (pose != myo::Pose::unknown && pose != myo::Pose::rest) {
-			if (currentPose == myo::Pose::fist)
-				std::cout << "You made a fist" << std::endl;
+			
+				
 			// Tell the Myo to stay unlocked until told otherwise. We do that here so you can hold the poses without the
 			// Myo becoming locked.
 			myo->unlock(myo::Myo::unlockHold);
@@ -132,6 +135,7 @@ public:
 	// These values are set by onOrientationData() and onPose() above.
 	int roll_w, pitch_w, yaw_w;
 	myo::Pose currentPose;
+
 };
 int main(int argc, char** argv)
 {
@@ -151,9 +155,16 @@ int main(int argc, char** argv)
 			throw std::runtime_error("Unable to find a Myo!");
 		}
 		// We've found a Myo.
-		std::cout << "Connected to a Myo armband!" << std::endl << std::endl;
+		std::cout << "Connected to a Myo armband!" << std::endl;
+		wchar_t COMport[1024];
+		std::wcsncpy(COMport, L"COM6", 1024);
+
+		Serial* _arduino = new Serial(COMport);
+		std::cout << "Connected to Arduino" << std::endl << std::endl;
 		// Next we construct an instance of our DeviceListener, so that we can register it with the Hub.
 		DataCollector collector;
+		if (!_arduino->IsConnected())
+			throw std::runtime_error("Couldn't connect to COM port");
 		// Hub::addListener() takes the address of any object whose class inherits from DeviceListener, and will cause
 		// Hub::run() to send events to all registered device listeners.
 		hub.addListener(&collector);
@@ -162,6 +173,21 @@ int main(int argc, char** argv)
 			// In each iteration of our main loop, we run the Myo event loop for a set number of milliseconds.
 			// In this case, we wish to update our display 20 times a second, so we run for 1000/20 milliseconds.
 			hub.run(1000 / 20);
+			if (collector.currentPose != myo::Pose::unknown && collector.currentPose != myo::Pose::rest)
+				if (collector.currentPose == collector.currentPose.fist)
+					_arduino->WriteData("fist", 4);
+				else if (collector.currentPose == collector.currentPose.waveIn)
+					_arduino->WriteData("wavein", 6);
+				else if (collector.currentPose == collector.currentPose.doubleTap)
+					_arduino->WriteData("double", 6);
+				else if (collector.currentPose == collector.currentPose.waveOut)
+					_arduino->WriteData("waveout", 7);
+				else if (collector.currentPose == collector.currentPose.fingersSpread)
+					_arduino->WriteData("fingers", 7);
+				else
+					printf("Unknown position sent");
+
+
 			// After processing events, we call the print() member function we defined above to print out the values we've
 			// obtained from any events that have occurred.
 			collector.print();

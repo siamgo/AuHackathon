@@ -146,10 +146,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="GettingStartedTest.cpp" />
-    <ClCompile Include="StreamingEMGData.cpp" />
+    <ClCompile Include="SeialClass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="myo\myo.hpp" />
+    <ClInclude Include="SerialClass.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
