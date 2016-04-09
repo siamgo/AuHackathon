@@ -18,7 +18,7 @@
 class DataCollector : public myo::DeviceListener {
 public:
 	DataCollector()
-		: onArm(false), isUnlocked(false), roll_w(0), pitch_w(0), yaw_w(0), currentPose()
+		: onArm(false), isUnlocked(false), roll_w(0), pitch_w(0), yaw_w(0), currentPose(), lastPose()
 	{
 	}
 	// onUnpair() is called whenever the Myo is disconnected from Myo Connect by the user.
@@ -61,7 +61,7 @@ public:
 		
 		if (pose != myo::Pose::unknown && pose != myo::Pose::rest) {
 			
-				
+		
 			// Tell the Myo to stay unlocked until told otherwise. We do that here so you can hold the poses without the
 			// Myo becoming locked.
 			myo->unlock(myo::Myo::unlockHold);
@@ -119,7 +119,9 @@ public:
 			std::string poseString = currentPose.toString();
 			std::cout << '[' << (isUnlocked ? "unlocked" : "locked  ") << ']'
 				<< '[' << (whichArm == myo::armLeft ? "L" : "R") << ']'
-				<< '[' << poseString << std::string(14 - poseString.size(), ' ') << ']';
+				<< "[CurrentPose: " << poseString << std::string(14 - poseString.size(), ' ') << ']';
+			poseString = lastPose.toString();
+			std::cout << "[Lastpose: " << poseString << ']' << std::endl;
 		}
 		else {
 			// Print out a placeholder for the arm and pose when Myo doesn't currently know which arm it's on.
@@ -135,6 +137,7 @@ public:
 	// These values are set by onOrientationData() and onPose() above.
 	int roll_w, pitch_w, yaw_w;
 	myo::Pose currentPose;
+	myo::Pose lastPose;
 
 };
 int main(int argc, char** argv)
@@ -157,7 +160,7 @@ int main(int argc, char** argv)
 		// We've found a Myo.
 		std::cout << "Connected to a Myo armband!" << std::endl;
 		wchar_t COMport[1024];
-		std::wcsncpy(COMport, L"COM6", 1024);
+		std::wcsncpy(COMport, L"COM5", 1024);
 
 		Serial* _arduino = new Serial(COMport);
 		std::cout << "Connected to Arduino" << std::endl << std::endl;
@@ -171,22 +174,30 @@ int main(int argc, char** argv)
 		// Finally we enter our main loop.
 		while (1) {
 			// In each iteration of our main loop, we run the Myo event loop for a set number of milliseconds.
-			// In this case, we wish to update our display 20 times a second, so we run for 1000/20 milliseconds.
-			hub.run(1000 / 20);
-			if (collector.currentPose != myo::Pose::unknown && collector.currentPose != myo::Pose::rest)
+			// In this case, we wish to update our display 2 times a second, so we run for 1000/20 milliseconds.
+			hub.run(1000 / 2);
+			if (collector.currentPose != myo::Pose::unknown && collector.currentPose != myo::Pose::rest && collector.currentPose != collector.lastPose)
+			{			
+				/*std::cout << " Sent data to arduino " << std::endl;*/
+				collector.lastPose = collector.currentPose;
 				if (collector.currentPose == collector.currentPose.fist)
+				{
+					std::cout << " Sent data to arduino " << std::endl;
 					_arduino->WriteData("fist", 4);
+				}
 				else if (collector.currentPose == collector.currentPose.waveIn)
 					_arduino->WriteData("wavein", 6);
 				else if (collector.currentPose == collector.currentPose.doubleTap)
-					_arduino->WriteData("double", 6);
+					_arduino->WriteData("doubleTab", 9);
 				else if (collector.currentPose == collector.currentPose.waveOut)
 					_arduino->WriteData("waveout", 7);
 				else if (collector.currentPose == collector.currentPose.fingersSpread)
 					_arduino->WriteData("fingers", 7);
 				else
-					printf("Unknown position sent");
-
+					collector.lastPose = collector.currentPose;
+			}
+			else if (collector.currentPose != myo::Pose::unknown && collector.currentPose == myo::Pose::rest)
+				collector.lastPose = collector.currentPose;
 
 			// After processing events, we call the print() member function we defined above to print out the values we've
 			// obtained from any events that have occurred.
