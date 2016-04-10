@@ -176,23 +176,25 @@ int main(int argc, char** argv)
 			// In each iteration of our main loop, we run the Myo event loop for a set number of milliseconds.
 			// In this case, we wish to update our display 2 times a second, so we run for 1000/20 milliseconds.
 			hub.run(1000 / 2);
-			if (collector.currentPose != myo::Pose::unknown && collector.currentPose != myo::Pose::rest && collector.currentPose != collector.lastPose)
+			if (collector.currentPose != myo::Pose::unknown && collector.currentPose != collector.lastPose)
 			{			
 				/*std::cout << " Sent data to arduino " << std::endl;*/
 				collector.lastPose = collector.currentPose;
 				if (collector.currentPose == collector.currentPose.fist)
 				{
 					std::cout << " Sent data to arduino " << std::endl;
-					_arduino->WriteData("fist", 4);
+					_arduino->WriteData("F", 1);
 				}
+				else if (collector.currentPose == collector.currentPose.rest)
+					_arduino->WriteData("W", 1);
 				else if (collector.currentPose == collector.currentPose.waveIn)
-					_arduino->WriteData("wavein", 6);
+					_arduino->WriteData("R", 1);
 				else if (collector.currentPose == collector.currentPose.doubleTap)
-					_arduino->WriteData("doubleTab", 9);
+					_arduino->WriteData("T", 1);
 				else if (collector.currentPose == collector.currentPose.waveOut)
-					_arduino->WriteData("waveout", 7);
+					_arduino->WriteData("V", 1);
 				else if (collector.currentPose == collector.currentPose.fingersSpread)
-					_arduino->WriteData("fingers", 7);
+					_arduino->WriteData("S", 1);
 				else
 					collector.lastPose = collector.currentPose;
 			}
