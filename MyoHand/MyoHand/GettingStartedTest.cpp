@@ -186,9 +186,9 @@ int main(int argc, char** argv)
 					_arduino->WriteData("F", 1);
 				}
 				else if (collector.currentPose == collector.currentPose.rest)
-					_arduino->WriteData("W", 1);
-				else if (collector.currentPose == collector.currentPose.waveIn)
 					_arduino->WriteData("R", 1);
+				else if (collector.currentPose == collector.currentPose.waveIn)
+					_arduino->WriteData("W", 1);
 				else if (collector.currentPose == collector.currentPose.doubleTap)
 					_arduino->WriteData("T", 1);
 				else if (collector.currentPose == collector.currentPose.waveOut)
